@@ -40,19 +40,28 @@ class Agendamento(models.Model):
 class Assinatura(models.Model):
     nome = models.CharField(max_length=100)                   
     preco = models.DecimalField(max_digits=6, decimal_places=2)
-    servicos_produtos_gratis = = models.ManyToManyField(
+    servicos_produtos_gratis = models.ManyToManyField(
         Servico,
-        through='ServicoGratis'  # tabela intermediária com serviços grátis a depender do tipo da assinatura
-    ) 
+        through='ServicoGratis',  # tabela intermediária com serviços grátis a depender do tipo da assinatura
+        related_name='assinaturas_gratis'
+    )
 
     servicos_produtos_com_desconto = models.ManyToManyField(
         Servico,
-        through='DescontoServico'  # tabela intermediária com o % de desconto
-    )  
+        through='DescontoServico',  # tabela intermediária com o % de desconto
+        related_name='assinaturas_com_desconto'
+    )
 
 #ServicoGratis
+class ServicoGratis(models.Model):
+    assinatura = models.ForeignKey(Assinatura, on_delete=models.CASCADE)
+    servico = models.ForeignKey(Servico, on_delete=models.CASCADE)
 
 #DescontoServico
+class DescontoServico(models.Model):
+    assinatura = models.ForeignKey(Assinatura, on_delete=models.CASCADE)
+    servico = models.ForeignKey(Servico, on_delete=models.CASCADE)
+    percentual_desconto = models.DecimalField(max_digits=5, decimal_places=2)
 
 #Produtos
 
